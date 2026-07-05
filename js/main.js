@@ -24,7 +24,7 @@ const DEFAULT_DATA = {
   link_maps: "https://goo.gl/maps/hovfxnkdwJH4WVDc9",
   embed_maps: "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3956.318819741475!2d110.2257257147759!3d-7.42992749463963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zN8KwMjUnNDcuNyJTIDExMMKwMTMnNDAuNSJF!5e0!3m2!1sid!2sid!4v1680313757205!5m2!1sid!2sid",
   musik_url: "https://media.indoinvite.com/2db3bf1e16cd47a08843bb881e39cce7:indoinvite-staging/indoinvite-staging/indoinvite-staging/nikah/upload/25426/suara_ucapan.mp3",
-  musik_alt: "",
+  musik_alt: "https://media.indoinvite.com/2db3bf1e16cd47a08843bb881e39cce7:indoinvite-staging/indoinvite-staging/indoinvite-staging/nikah/upload/25426/suara_ucapan.mp3",
   autoplay: true,
   password_admin: "y2103",
   watermark: "@ysiroo",
