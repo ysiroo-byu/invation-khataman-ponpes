@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Panel - Edit Undangan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #ac373c, #ffa803);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .admin-header h1 { font-size: 20px; margin-bottom: 5px; }
+        
+        .admin-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .panel-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .panel-section h2 {
+            color: #ac373c;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffa803;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ac373c;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #ac373c;
+            color: white;
+        }
+        
+        .btn-primary:hover { background: #8a2c30; }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #ac373c;
+            text-decoration: none;
+        }
+        
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1><i class="fas fa-cog"></i> Admin Panel</h1>
+        <p>Kelola Konten Undangan</p>
+    </div>
+    
+    <div class="admin-container">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Undangan</a>
+        
+        <div id="alert-success" class="alert alert-success">
+            <i class="fas fa-check-circle"></i> Data berhasil disimpan!
+        </div>
+        
+        <div class="panel-section">
+            <h2><i class="fas fa-info-circle"></i> Info Acara</h2>
+            <div class="form-group">
+                <label>Nama Acara</label>
+                <input type="text" id="field-nama-acara" placeholder="Contoh: Haflah At Tasyakur...">
+            </div>
+            <div class="form-group">
+                <label>Tanggal Acara</label>
+                <input type="datetime-local" id="field-tanggal-acara">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="saveData()">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <h2><i class="fas fa-download"></i> Export / Import</h2>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="exportData()">
+                    <i class="fas fa-download"></i> Export JSON
+                </button>
+                <button class="btn btn-success" onclick="document.getElementById('import-file').click()">
+                    <i class="fas fa-upload"></i> Import JSON
+                </button>
+                <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Load Data
+        function loadData() {
+            const saved = localStorage.getItem('undangan_data');
+            return saved ? JSON.parse(saved) : getDefaultData();
+        }
+        
+        function getDefaultData() {
+            return {
+                nama_acara: "Haflah At Tasyakur Likhtitam Al Qur'an wal Kutub ke-XII",
+                tanggal_acara: "2023-05-08T18:00",
+                ucapan_list: []
+            };
+        }
+        
+        let data = loadData();
+        
+        // Save Data
+        function saveData() {
+            data.nama_acara = document.getElementById('field-nama-acara').value;
+            data.tanggal_acara = document.getElementById('field-tanggal-acara').value;
+            
+            localStorage.setItem('undangan_data', JSON.stringify(data));
+            showAlert();
+        }
+        
+        // Show Alert
+        function showAlert() {
+            const alert = document.getElementById('alert-success');
+            alert.style.display = 'block';
+            setTimeout(() => { alert.style.display = 'none'; }, 3000);
+        }
+        
+        // Export Data
+        function exportData() {
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'undangan-data-' + Date.now() + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Import Data
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (confirm('Import akan mengganti semua data saat ini. Lanjutkan?')) {
+                        data = imported;
+                        localStorage.setItem('undangan_data', JSON.stringify(data));
+                        alert('Data berhasil diimport!');
+                        location.reload();
+                    }
+                } catch (err) {
+                    alert('File tidak valid!');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Load data ke form
+        window.addEventListener('load', () => {
+            document.getElementById('field-nama-acara').value = data.nama_acara;
+            document.getElementById('field-tanggal-acara').value = data.tanggal_acara;
+        });
+    </script>
+</body>
+</html>
