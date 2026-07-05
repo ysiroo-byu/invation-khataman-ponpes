@@ -1,3 +1,8 @@
+/* ========================================
+   UNDANGAN DIGITAL - STYLE.CSS
+   Versi Lengkap dengan Perbaikan
+   ======================================== */
+
 /* ===== RESET & BASE ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { overflow-x: hidden; scroll-behavior: smooth; }
@@ -22,8 +27,8 @@ body {
   max-width: 500px;
   min-height: 100vh;
   position: relative;
-  /* ✅ FIX: Tambahkan padding-bottom untuk mencegah footer tertutup floating menu */
-  padding-bottom: 100px;
+  /* ✅ FIX: Padding-bottom untuk ruang floating menu */
+  padding-bottom: 120px;
 }
 
 h1, h2, h3, h4, h5, h6 { font-family: 'Lora', serif; }
@@ -33,7 +38,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 #loading-screen {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   z-index: 999999;
   display: flex;
   flex-direction: column;
@@ -45,12 +50,12 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 .loader-text {
   font-family: 'Lora', serif;
   font-size: 32px;
-  color: #0A878E;
+  color: #fff;
   animation: pulse 1.5s infinite;
 }
 .loader-sub {
   font-size: 12px;
-  color: #666;
+  color: rgba(255,255,255,0.8);
   margin-top: 10px;
   text-align: center;
   padding: 0 20px;
@@ -64,7 +69,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 .cover-section {
   background: linear-gradient(var(--color-primary), var(--color-secondary));
   background-size: cover;
-  background-position: center;
+  background-position: center bottom;
   width: 100%;
   min-height: 100vh;
   position: fixed;
@@ -75,12 +80,45 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   display: flex;
   justify-content: center;
   align-items: center;
+  contain: content;
 }
+
+/* ✅ FIX: Animasi cover saat dibuka */
 .cover-section.cover-opened {
   pointer-events: none;
-  transform: translateY(-100%);
-  opacity: 0;
 }
+.cover-section.cover-opened .cover-wrapper {
+  transform: scale(1.5);
+  opacity: 0;
+  transition: all 0.8s ease-in;
+}
+.cover-section.cover-opened .orn-atas .image-element {
+  transform: translateY(-500%);
+  transition: all 1s ease-in;
+}
+.cover-section.cover-opened .orn-lampu1 .image-element {
+  transform: translateY(-500%);
+  transition: all 1s ease-in;
+}
+.cover-section.cover-opened .orn-lampu2 .image-element {
+  transform: translateY(-500%);
+  transition: all 1s ease-in;
+}
+.cover-section.cover-opened .orn-dauna1 .image-element {
+  transform: translateX(500%);
+  transition: all 1s ease-in;
+}
+.cover-section.cover-opened .orn-dauna2 .image-element {
+  transform: translateX(-500%);
+  transition: all 1s ease-in;
+}
+.cover-section.cover-opened .orn-bawah1 .image-element,
+.cover-section.cover-opened .orn-bawah2 .image-element,
+.cover-section.cover-opened .orn-bawah3 .image-element {
+  transform: translateY(500%);
+  transition: all 1s ease-in;
+}
+
 .cover-wrapper {
   position: relative;
   width: 100%;
@@ -90,6 +128,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   align-items: center;
   padding: 20px;
   z-index: 10;
+  transition: all 0.5s ease-in-out;
 }
 .cover-content {
   width: 100%;
@@ -156,130 +195,182 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   transform: translateY(-2px);
 }
 
-/* ===== ORNAMENTS ===== */
+/* ===== ORNAMENTS WRAPPER ===== */
 .ornaments-wrapper {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   pointer-events: none;
-  z-index: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 2010;
 }
 .ornaments-wrapper img { width: 100%; display: block; }
 
-/* Cover Ornaments */
+/* ===== COVER ORNAMENTS ===== */
 .cover-section .orn-atas {
   position: absolute;
-  top: -100px; left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
+  top: -140px;
+  left: -25%;
+  width: 150%;
   animation: rotate2 25s linear infinite;
+  transform-origin: center;
   z-index: 2;
+}
+.cover-section .orn-atas .image-element {
+  transition: all 2s ease-in;
 }
 .cover-section .orn-lampu1 {
   position: absolute;
-  top: -30px; left: 0;
-  width: 30%;
+  top: -60px;
+  left: 0.2%;
+  width: 28%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 2;
 }
+.cover-section .orn-lampu1 .image-element {
+  transition: all 2s ease-in;
+}
 .cover-section .orn-lampu2 {
   position: absolute;
-  top: -30px; right: 0;
-  width: 30%;
+  top: -60px;
+  right: 0.2%;
+  width: 28%;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 2;
 }
+.cover-section .orn-lampu2 .image-element {
+  transition: all 2s ease-in;
+}
 .cover-section .orn-dauna1 {
   position: absolute;
-  top: 0; right: 0;
+  top: -2px;
+  right: -2%;
   width: 40%;
   z-index: 3;
+}
+.cover-section .orn-dauna1 .image-element {
+  transition: all 2s ease-in;
 }
 .cover-section .orn-dauna2 {
   position: absolute;
-  top: 0; left: 0;
+  top: -2px;
+  left: -2%;
   width: 40%;
   z-index: 3;
 }
+.cover-section .orn-dauna2 .image-element {
+  transition: all 2s ease-in;
+}
 .cover-section .orn-bawah1 {
   position: absolute;
-  bottom: 150px; left: 0; right: 0;
+  bottom: 180px;
+  right: 0%;
+  left: 0%;
   width: 100%;
+  margin: 0 auto;
   z-index: 3;
+}
+.cover-section .orn-bawah1 .image-element {
+  transition: all 2s ease-in;
 }
 .cover-section .orn-bawah2 {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
+  bottom: -10px;
+  right: 0%;
+  left: 0%;
   width: 100%;
+  margin: 0 auto;
   z-index: 3;
+}
+.cover-section .orn-bawah2 .image-element {
+  transition: all 2s ease-in;
 }
 .cover-section .orn-bawah3 {
   position: absolute;
-  bottom: -10px; left: 5%; right: 5%;
+  bottom: -10px;
+  right: 0%;
+  left: 0%;
   width: 90%;
+  margin: 0 auto;
   z-index: 3;
 }
+.cover-section .orn-bawah3 .image-element {
+  transition: all 2s ease-in;
+}
 
-/* Header Ornaments */
+/* ===== HEADER ORNAMENTS ===== */
 .header-section .orn-atas {
   position: absolute;
-  top: 30px; left: 50%;
-  transform: translateX(-50%);
-  width: 30%;
+  top: 60px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 25%;
   z-index: 2;
 }
 .header-section .orn-lampu1 {
   position: absolute;
-  top: 0; left: -15%;
-  width: 45%;
+  top: -10px;
+  left: -20%;
+  width: 50%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 2;
 }
 .header-section .orn-lampu2 {
   position: absolute;
-  top: 0; right: -15%;
-  width: 45%;
+  top: -10px;
+  right: -20%;
+  width: 50%;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 2;
 }
 .header-section .orn-dauna1 {
   position: absolute;
-  top: 0; right: -2%;
+  top: -7px;
+  right: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: right;
-  z-index: 2;
 }
 .header-section .orn-dauna2 {
   position: absolute;
-  top: 0; left: -2%;
+  top: -7px;
+  left: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: left;
-  z-index: 2;
 }
 
-/* Couple Section Ornaments */
+/* ===== COUPLE SECTION ORNAMENTS ===== */
 .couple-section .orn-atas {
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   width: 100%;
   z-index: 2;
 }
 .couple-section .orn-atasa {
   position: absolute;
-  top: 50px; left: 50%;
-  transform: translateX(-50%);
+  top: 60px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   width: 40%;
-  animation: scale 5.5s infinite ease-in-out;
   z-index: 2;
+  animation: scale 5.5s infinite ease-in-out;
+  transform-origin: center;
 }
 .couple-section .orn-lampu1 {
   position: absolute;
-  top: 40px; left: 0;
+  top: 45px;
+  left: 0%;
   width: 30%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
@@ -287,7 +378,8 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 }
 .couple-section .orn-lampu2 {
   position: absolute;
-  top: 40px; right: 0;
+  top: 45px;
+  right: 0%;
   width: 30%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
@@ -295,69 +387,84 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 }
 .couple-section .orn-dauna1 {
   position: absolute;
-  bottom: 0; right: 0;
+  bottom: -7px;
+  right: 0%;
   width: 40%;
-  animation: scale 5.5s infinite ease-in-out;
   z-index: 1;
+  animation: scale 5.5s infinite ease-in-out;
+  transform-origin: center;
 }
 .couple-section .orn-dauna2 {
   position: absolute;
-  bottom: 0; left: 0;
+  bottom: -7px;
+  left: 0%;
   width: 40%;
-  animation: scale 5.5s infinite ease-in-out;
   z-index: 1;
+  animation: scale 5.5s infinite ease-in-out;
+  transform-origin: center;
 }
 .couple-section .orn-bawah {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0px;
+  right: 0%;
+  left: 0%;
   width: 100%;
+  margin: 0 auto;
   z-index: 3;
 }
 
-/* Acara Section Ornaments */
+/* ===== ACARA SECTION ORNAMENTS ===== */
 .acara-section .orn-lampu1 {
   position: absolute;
-  top: 0; left: -15%;
-  width: 45%;
+  top: -10px;
+  left: -20%;
+  width: 50%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 2;
 }
 .acara-section .orn-lampu2 {
   position: absolute;
-  top: 0; right: -15%;
-  width: 45%;
+  top: -10px;
+  right: -20%;
+  width: 50%;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 2;
 }
 .acara-section .orn-dauna1 {
   position: absolute;
-  top: 0; right: -2%;
+  top: -7px;
+  right: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: right;
-  z-index: 2;
 }
 .acara-section .orn-dauna2 {
   position: absolute;
-  top: 0; left: -2%;
+  top: -7px;
+  left: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: left;
-  z-index: 2;
 }
 
-/* Story Section Ornaments */
+/* ===== STORY (GALLERY) SECTION ORNAMENTS ===== */
 .story-section .orn-atas {
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   width: 100%;
   z-index: 2;
 }
 .story-section .orn-lampu1 {
   position: absolute;
-  top: 40px; left: -10%;
+  top: 56px;
+  left: -15%;
   width: 40%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
@@ -365,17 +472,19 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 }
 .story-section .orn-lampu2 {
   position: absolute;
-  top: 40px; right: -10%;
+  top: 56px;
+  right: -15%;
   width: 40%;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: top;
   z-index: 1;
 }
 
-/* Venue Section Ornaments */
+/* ===== VENUE SECTION ORNAMENTS ===== */
 .venue-section .orn-lampu1 {
   position: absolute;
-  top: 120px; left: -15%;
+  top: 160px;
+  left: -20%;
   width: 40%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
@@ -383,7 +492,8 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 }
 .venue-section .orn-lampu2 {
   position: absolute;
-  top: 120px; right: -15%;
+  top: 160px;
+  right: -20%;
   width: 40%;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: top;
@@ -391,31 +501,37 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 }
 .venue-section .orn-dauna1 {
   position: absolute;
-  top: 0; right: -2%;
+  top: -7px;
+  right: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: right;
-  z-index: 2;
 }
 .venue-section .orn-dauna2 {
   position: absolute;
-  top: 0; left: -2%;
+  top: -7px;
+  left: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: left;
-  z-index: 2;
 }
 .venue-section .orn-bawah {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0px;
+  right: 0%;
+  left: 0%;
   width: 100%;
+  margin: 0 auto;
   z-index: 3;
 }
 
-/* RSVP Section Ornaments */
+/* ===== RSVP SECTION ORNAMENTS ===== */
 .rsvp-section .orn-lampu1 {
   position: absolute;
-  top: 120px; left: -15%;
+  top: 160px;
+  left: -20%;
   width: 40%;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: top;
@@ -423,7 +539,8 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 }
 .rsvp-section .orn-lampu2 {
   position: absolute;
-  top: 120px; right: -15%;
+  top: 160px;
+  right: -20%;
   width: 40%;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: top;
@@ -431,25 +548,156 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 }
 .rsvp-section .orn-dauna1 {
   position: absolute;
-  top: 0; right: -2%;
+  top: -7px;
+  right: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing 5.5s infinite ease-in-out;
   transform-origin: right;
-  z-index: 2;
 }
 .rsvp-section .orn-dauna2 {
   position: absolute;
-  top: 0; left: -2%;
+  top: -7px;
+  left: -2%;
   width: 40%;
+  z-index: 2;
   animation: smoothSwing2 5.5s infinite ease-in-out;
   transform-origin: left;
-  z-index: 2;
 }
 .rsvp-section .orn-bawah {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0px;
+  right: 0%;
+  left: 0%;
   width: 100%;
+  margin: 0 auto;
   z-index: 3;
+}
+
+/* ===== THANK SECTION ORNAMENTS (BARU - Seperti Gallery) ===== */
+.thank-section .ornaments-wrapper {
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Lampu kiri & kanan */
+.thank-section .orn-lampu1 {
+  position: absolute;
+  top: 56px;
+  left: -15%;
+  width: 40%;
+  animation: smoothSwing2 5.5s infinite ease-in-out;
+  transform-origin: top;
+  z-index: 1;
+}
+.thank-section .orn-lampu2 {
+  position: absolute;
+  top: 56px;
+  right: -15%;
+  width: 40%;
+  animation: smoothSwing 5.5s infinite ease-in-out;
+  transform-origin: top;
+  z-index: 1;
+}
+
+/* Ornamen atas tengah */
+.thank-section .orn-atas {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 100%;
+  z-index: 2;
+}
+
+/* Daun bawah */
+.thank-section .orn-bawah {
+  position: absolute;
+  bottom: 0px;
+  right: 0%;
+  left: 0%;
+  width: 100%;
+  margin: 0 auto;
+  z-index: 3;
+}
+
+/* Bunga-bunga animasi di bawah */
+.thank-section .orn-bungab1 {
+  position: absolute;
+  bottom: -45px;
+  width: 30%;
+  left: 2%;
+  z-index: 1;
+  animation: smoothSwing 6s linear infinite;
+  transform-origin: center;
+}
+.thank-section .orn-bungab2 {
+  position: absolute;
+  bottom: -30px;
+  width: 30%;
+  left: 18.5%;
+  z-index: 2;
+  animation: smoothSwing 8s linear infinite;
+  transform-origin: center;
+}
+.thank-section .orn-bungab3 {
+  position: absolute;
+  bottom: -50px;
+  width: 30%;
+  left: 30%;
+  z-index: 1;
+  animation: smoothSwing 6s linear infinite;
+  transform-origin: center;
+}
+.thank-section .orn-bungab4 {
+  position: absolute;
+  bottom: -41px;
+  width: 30%;
+  right: 25.5%;
+  z-index: 2;
+  animation: smoothSwing2 8s linear infinite;
+  transform-origin: center;
+}
+.thank-section .orn-bungab5 {
+  position: absolute;
+  bottom: -65px;
+  width: 45%;
+  right: 1%;
+  z-index: 2;
+  animation: smoothSwing2 6s linear infinite;
+  transform-origin: center;
+}
+.thank-section .orn-bungab6 {
+  position: absolute;
+  bottom: -25px;
+  width: 15.5%;
+  right: -0.5%;
+  z-index: 1;
+  animation: smoothSwing2 8s linear infinite;
+  transform-origin: center;
+}
+
+/* Daun besar di bawah */
+.thank-section .orn-daunb1 {
+  position: absolute;
+  bottom: -2.5%;
+  width: 45%;
+  left: -5.5%;
+  z-index: 1;
+  animation: smoothSwing2 6s linear infinite;
+  transform-origin: bottom left;
+}
+.thank-section .orn-daunb2 {
+  position: absolute;
+  bottom: -2.5%;
+  width: 45%;
+  right: -5.5%;
+  z-index: 1;
+  animation: smoothSwing 6s linear infinite;
+  transform-origin: bottom right;
 }
 
 /* ===== HEADER SECTION ===== */
@@ -923,15 +1171,26 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 .badge-hadir.hadir { background: #d4edda; color: #155724; }
 .badge-hadir.tidak-hadir { background: #f8d7da; color: #721c24; }
 
-/* ===== THANK SECTION ===== */
+/* ===== THANK SECTION (DIPERBAIKI) ===== */
 .thank-section {
   background: linear-gradient(var(--color-primary), var(--color-secondary));
   background-size: cover;
-  background-position: center;
+  background-position: center bottom;
   min-height: 100vh;
   position: relative;
-  padding: 80px 20px;
+  padding: 3rem 0;
   text-align: center;
+  contain: content;
+}
+.thank-section .container-content {
+  position: relative;
+  z-index: 2010;
+  width: 85%;
+  margin: 0 auto;
+  padding: 100px 0;
+}
+.thank-section p {
+  color: var(--color-paragraph) !important;
 }
 .foto-sampul-akhir {
   width: 150px;
@@ -958,15 +1217,43 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   margin: 0 auto;
 }
 
-/* ===== FOOTER ===== */
+/* ===== SVG WAVE SHAPE TRANSITIONS (BARU) ===== */
+.elementor-shape {
+  position: relative;
+  z-index: 2020;
+  bottom: -1px;
+  transform: rotate(180deg);
+  line-height: 0;
+}
+.elementor-shape svg {
+  width: calc(180% + 1.3px);
+  height: 60px;
+  display: block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.elementor-shape-fill {
+  fill: var(--color-secondary);
+}
+
+/* Shape fill untuk section putih */
+.elementor-shape.white-fill .elementor-shape-fill {
+  fill: #FFFFFF;
+}
+.elementor-shape.primary-fill .elementor-shape-fill {
+  fill: var(--color-primary);
+}
+
+/* ===== FOOTER (DIPERBAIKI) ===== */
 .footer {
-  background: var(--color-secondary);
-  padding: 30px 20px;
+  background: linear-gradient(to bottom, var(--color-secondary), #063a31);
+  padding: 50px 20px 120px;
   text-align: center;
   color: var(--color-heading);
   font-size: 12px;
-  /* ✅ FIX: Tambahkan margin-bottom untuk memberi ruang floating menu */
-  margin-bottom: 80px;
+  position: relative;
+  margin-bottom: 0;
 }
 .watermark {
   margin-top: 10px;
@@ -988,10 +1275,10 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   50% { transform: scale(1.5); }
 }
 
-/* ===== FLOATING MENU ===== */
+/* ===== FLOATING MENU (DIPERBAIKI) ===== */
 .fix-menu {
   position: fixed;
-  bottom: 20px;
+  bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(255,255,255,0.95);
@@ -1002,13 +1289,14 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   box-shadow: 0 5px 20px rgba(0,0,0,0.2);
   z-index: 1000;
   max-width: 400px;
-  backdrop-filter: blur(10px);
-  /* ✅ FIX: Pastikan floating menu tidak menutupi konten */
   width: calc(100% - 40px);
+  backdrop-filter: blur(10px);
+  justify-content: space-around;
+  align-items: center;
 }
 .menu-item {
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -1018,6 +1306,7 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   color: var(--color-secondary);
   background: transparent;
   flex-shrink: 0;
+  font-size: 16px;
 }
 .menu-item:hover {
   background: var(--color-primary);
@@ -1028,7 +1317,6 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   background: var(--color-primary);
   color: #fff;
 }
-/* ✅ FIX: Styling untuk tombol musik aktif */
 .menu-item.active i {
   animation: musicPulse 1s infinite;
 }
@@ -1121,10 +1409,9 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
 /* ===== ANIMASI UCAPAN FLOATING ===== */
 .animasi-ucapan {
   position: fixed;
-  /* ✅ FIX: Posisi di atas floating menu */
   bottom: 100px;
   left: -350px;
-  z-index: 999;
+  z-index: 9999;
   transition: all 0.5s ease;
   pointer-events: none;
 }
@@ -1175,11 +1462,15 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 480px) {
   body {
-    padding-bottom: 80px;
+    padding-bottom: 100px;
   }
   
   .nama-acara-cover { font-size: 22px; }
@@ -1191,14 +1482,14 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   
   .fix-menu { 
-    padding: 6px 10px; 
+    padding: 8px 12px; 
     gap: 8px;
     bottom: 15px;
   }
-  .menu-item { width: 30px; height: 30px; font-size: 14px; }
+  .menu-item { width: 35px; height: 35px; font-size: 14px; }
   
   .footer {
-    margin-bottom: 70px;
+    padding: 40px 15px 100px;
   }
   
   .animasi-ucapan {
@@ -1210,4 +1501,36 @@ p { font-family: 'Assistant', sans-serif; line-height: 1.6; }
   .box-animasi {
     max-width: 250px;
   }
+  
+  .thank-section .container-content {
+    padding: 80px 0;
+  }
+  
+  .thank-section .orn-bungab1,
+  .thank-section .orn-bungab2,
+  .thank-section .orn-bungab3,
+  .thank-section .orn-bungab4,
+  .thank-section .orn-bungab5,
+  .thank-section .orn-bungab6 {
+    display: none;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.overlayy {
+  background-color: transparent;
+  background-image: linear-gradient(180deg, #ffffff96 0%, #ffffffb8 100%);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2001;
+  top: 0;
+  opacity: 1;
+  left: 0;
+  pointer-events: none;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
 }
