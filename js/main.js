@@ -1,6 +1,6 @@
 // ========================================
 // UNDANGAN DIGITAL - MAIN JAVASCRIPT
-// Versi Perbaikan - Anti Null Error
+// Versi Final - Musik & Footer Fix
 // ========================================
 
 // ===== DATA DEFAULT =====
@@ -24,7 +24,7 @@ const DEFAULT_DATA = {
   link_maps: "https://goo.gl/maps/hovfxnkdwJH4WVDc9",
   embed_maps: "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3956.318819741475!2d110.2257257147759!3d-7.42992749463963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zN8KwMjUnNDcuNyJTIDExMMKwMTMnNDAuNSJF!5e0!3m2!1sid!2sid!4v1680313757205!5m2!1sid!2sid",
   musik_url: "https://media.indoinvite.com/2db3bf1e16cd47a08843bb881e39cce7:indoinvite-staging/indoinvite-staging/indoinvite-staging/nikah/upload/25426/suara_ucapan.mp3",
-  musik_alt: "https://media.indoinvite.com/2db3bf1e16cd47a08843bb881e39cce7:indoinvite-staging/indoinvite-staging/indoinvite-staging/nikah/upload/25426/suara_ucapan.mp3",
+  musik_alt: "",
   autoplay: true,
   password_admin: "y2103",
   watermark: "@ysiroo",
@@ -48,6 +48,13 @@ const DEFAULT_DATA = {
   ],
   ucapan: []
 };
+
+// ===== FALLBACK MUSIC SOURCES =====
+const MUSIC_FALLBACKS = [
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+  "https://file-examples.com/storage/fe1c0c8f5b5b5b5b5b5b5b5b/2017/11/file_example_MP3_1MG.mp3"
+];
 
 // ===== UTILITY: Safe Element Getter =====
 function safeGet(id) {
@@ -173,16 +180,83 @@ function renderData() {
     attachIconAtListener();
   }
 
-  // Musik
-  const audio = safeGet('audio-bg');
-  if (audio && DATA.musik_url) {
-    audio.src = DATA.musik_url;
-  }
+  // ✅ FIX: Setup Audio dengan Fallback
+  setupAudio();
 
   // Render Gallery, Timeline, Ucapan
   renderGallery();
   renderTimeline();
   renderUcapanList();
+}
+
+// ===== SETUP AUDIO DENGAN FALLBACK =====
+function setupAudio() {
+  const audio = safeGet('audio-bg');
+  if (!audio) {
+    console.warn('Audio element tidak ditemukan');
+    return;
+  }
+
+  // Set volume
+  audio.volume = 0.5;
+
+  // Cek apakah URL musik valid
+  const musicUrl = DATA.musik_url;
+  if (musicUrl && isValidMusicUrl(musicUrl)) {
+    // ✅ FIX: Gunakan source element untuk fallback yang lebih baik
+    audio.innerHTML = '';
+    const source = document.createElement('source');
+    source.src = musicUrl;
+    source.type = 'audio/mpeg';
+    audio.appendChild(source);
+    
+    // Tambahkan fallback sources
+    MUSIC_FALLBACKS.forEach(url => {
+      const fallbackSource = document.createElement('source');
+      fallbackSource.src = url;
+      fallbackSource.type = 'audio/mpeg';
+      audio.appendChild(fallbackSource);
+    });
+    
+    // ✅ FIX: Load ulang audio setelah src berubah
+    audio.load();
+    
+    console.log('✓ Music loaded:', musicUrl);
+  } else {
+    console.warn('URL musik tidak valid, menggunakan fallback');
+    loadFallbackMusic(audio);
+  }
+
+  // Error handler untuk fallback otomatis
+  audio.addEventListener('error', function(e) {
+    console.warn('Music load error, trying fallback...');
+    loadFallbackMusic(audio);
+  }, true);
+}
+
+function isValidMusicUrl(url) {
+  if (!url) return false;
+  // Cek apakah URL berformat audio yang valid
+  const validExtensions = ['.mp3', '.wav', '.ogg', '.m4a', '.aac'];
+  const lowerUrl = url.toLowerCase();
+  return validExtensions.some(ext => lowerUrl.includes(ext)) || 
+         lowerUrl.includes('audio/') || 
+         lowerUrl.includes('music');
+}
+
+function loadFallbackMusic(audio) {
+  if (!audio) return;
+  
+  // Coba fallback sources satu per satu
+  for (let i = 0; i < MUSIC_FALLBACKS.length; i++) {
+    const source = document.createElement('source');
+    source.src = MUSIC_FALLBACKS[i];
+    source.type = 'audio/mpeg';
+    audio.appendChild(source);
+  }
+  
+  audio.load();
+  console.log('✓ Fallback music loaded');
 }
 
 // ===== RENDER GALLERY =====
@@ -326,7 +400,6 @@ function initFormUcapan() {
   const kehadiranSelect = safeGet('input-kehadiran');
   const jumlahGroup = safeGet('jumlah-group');
 
-  // ✅ FIX: Tambahkan null check
   if (kehadiranSelect) {
     kehadiranSelect.addEventListener('change', function() {
       if (jumlahGroup) {
@@ -431,23 +504,44 @@ function startAutoAnimasiUcapan() {
   }, 8000);
 }
 
-// ===== AUDIO CONTROL =====
+// ===== AUDIO CONTROL - IMPROVED =====
 let isMusicPlaying = false;
+let musicLoadAttempts = 0;
+const MAX_LOAD_ATTEMPTS = 3;
+
 function toggleMusic() {
   const audio = safeGet('audio-bg');
   const btn = safeGet('btn-music');
-  if (!audio) return;
+  if (!audio) {
+    console.warn('Audio element tidak ditemukan');
+    return;
+  }
 
   if (audio.paused) {
-    audio.play().then(() => {
-      isMusicPlaying = true;
-      if (btn) {
-        btn.innerHTML = '<i class="fa fa-pause"></i>';
-        btn.classList.add('active');
-      }
-    }).catch(err => {
-      console.log('Audio play error:', err);
-    });
+    // ✅ FIX: Play dengan error handling yang lebih baik
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        isMusicPlaying = true;
+        if (btn) {
+          btn.innerHTML = '<i class="fa fa-pause"></i>';
+          btn.classList.add('active');
+        }
+        console.log('✓ Musik berhasil diputar');
+      }).catch(err => {
+        console.error('Gagal memutar musik:', err);
+        // Coba fallback jika gagal
+        if (musicLoadAttempts < MAX_LOAD_ATTEMPTS) {
+          musicLoadAttempts++;
+          console.log(`Mencoba fallback ke-${musicLoadAttempts}...`);
+          loadFallbackMusic(audio);
+          setTimeout(() => toggleMusic(), 500);
+        } else {
+          showMusicErrorNotification();
+        }
+      });
+    }
   } else {
     audio.pause();
     isMusicPlaying = false;
@@ -458,31 +552,98 @@ function toggleMusic() {
   }
 }
 
+function showMusicErrorNotification() {
+  const notif = document.createElement('div');
+  notif.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff6b6b;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    z-index: 99999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-size: 14px;
+    max-width: 90%;
+    text-align: center;
+  `;
+  notif.innerHTML = `
+    <strong>⚠️ Musik Tidak Tersedia</strong><br>
+    <small>Silakan cek koneksi internet atau update URL musik di admin panel.</small>
+  `;
+  document.body.appendChild(notif);
+  
+  setTimeout(() => {
+    notif.style.opacity = '0';
+    notif.style.transition = 'opacity 0.5s';
+    setTimeout(() => notif.remove(), 500);
+  }, 5000);
+}
+
 function initAudio() {
   const audio = safeGet('audio-bg');
   if (!audio) return;
 
-  audio.volume = 0.5;
-
+  // ✅ FIX: Setup audio sudah dipindah ke setupAudio()
+  // Di sini hanya setup event listener untuk tombol buka undangan
+  
   if (DATA.autoplay !== false) {
     const btnBuka = safeGet('btn-buka-undangan');
     if (btnBuka) {
       btnBuka.addEventListener('click', function() {
+        // ✅ FIX: Delay sedikit untuk memastikan audio sudah di-load
         setTimeout(() => {
-          audio.play().then(() => {
-            isMusicPlaying = true;
-            const btn = safeGet('btn-music');
-            if (btn) {
-              btn.innerHTML = '<i class="fa fa-pause"></i>';
-              btn.classList.add('active');
-            }
-          }).catch(err => {
-            console.log('Autoplay blocked:', err);
-          });
-        }, 500);
+          const playPromise = audio.play();
+          
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              isMusicPlaying = true;
+              const btn = safeGet('btn-music');
+              if (btn) {
+                btn.innerHTML = '<i class="fa fa-pause"></i>';
+                btn.classList.add('active');
+              }
+              console.log('✓ Musik autoplay berhasil');
+            }).catch(err => {
+              console.warn('Autoplay diblokir oleh browser:', err.message);
+              console.log('💡 User perlu klik tombol musik untuk memulai');
+              
+              // Tampilkan notifikasi halus
+              showAutoplayHint();
+            });
+          }
+        }, 800);
       });
     }
   }
+}
+
+function showAutoplayHint() {
+  const hint = document.createElement('div');
+  hint.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 135, 142, 0.95);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    z-index: 9999;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.5s ease;
+  `;
+  hint.innerHTML = '🎵 Klik icon musik untuk mengaktifkan suara';
+  document.body.appendChild(hint);
+  
+  setTimeout(() => {
+    hint.style.opacity = '0';
+    hint.style.transition = 'opacity 0.5s';
+    setTimeout(() => hint.remove(), 500);
+  }, 4000);
 }
 
 // ===== COVER / BUKA UNDANGAN =====
@@ -705,7 +866,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    // ✅ FIX: Enter key untuk submit login (dengan null check)
+    // Enter key untuk submit login
     const inputPassword = safeGet('input-password');
     if (inputPassword) {
       inputPassword.addEventListener('keypress', function(e) {
