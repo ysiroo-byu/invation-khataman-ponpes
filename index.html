@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haflah At Tasyakur Likhtitam Al Qur'an wal Kutub ke-XII</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Oswald:wght@400;600&family=Waterfall&family=Sacramento&display=swap" rel="stylesheet">
+<!-- AOS Animation -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div id="loading-screen">
+  <div class="loading-content">
+    <svg class="svg-loading" viewBox="0 0 200 100">
+      <text x="50%" y="50%" dy=".35em" text-anchor="middle">Loading...</text>
+    </svg>
+    <p class="loading-text">Untuk tampilan terbaik gunakan Google Chrome</p>
+  </div>
+</div>
+
+<!-- ============ COVER / AWAL ============ -->
+<div id="cover" class="cover">
+  <div class="cover-content" data-aos="zoom-in">
+    <h1 class="cover-subtitle">We Invite You To</h1>
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-Icon.png" alt="Icon" class="cover-icon">
+    <h2 class="cover-title" data-aos="fade-down" id="display-nama-acara">Haflah At Tasyakur Likhtitam Al Qur'an wal Kutub ke-XII</h2>
+    <p class="cover-to">Kepada</p>
+    <h3 class="cover-guest" id="display-nama-tamu">Bapak/Ibu/Saudara/i</h3>
+    <p class="cover-desc">Tanpa Mengurangi Rasa Hormat, Kami Mengundang Bapak/Ibu/Saudara/i untuk Hadir di Acara Kami.</p>
+    <button id="btn-open" class="btn-open">
+      <i class="fas fa-envelope-open"></i> Buka Undangan
+    </button>
+  </div>
+</div>
+
+<!-- ============ MAIN CONTENT ============ -->
+<div id="main-content" class="main-content" style="display:none;">
+
+  <!-- BOX 1: Hero Slider -->
+  <section class="box box-1">
+    <div class="hero-slider">
+      <div class="slide active" id="slide-1"></div>
+      <div class="slide" id="slide-2"></div>
+      <div class="slide" id="slide-3"></div>
+    </div>
+    <div class="hero-overlay">
+      <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-Box1.png" alt="Frame" class="hero-frame">
+      <h1 class="hero-title" data-aos="zoom-in" id="display-nama-acara-2">Haflah At Tasyakur Likhtitam Al Qur'an wal Kutub ke-XII</h1>
+      <div class="scroll-indicator" onclick="scrollToSection('box-2')">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOX 2: Ucapan Pembuka -->
+  <section class="box box-2" id="box-2">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKR.png" class="ornament top-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKN.png" class="ornament top-right sway-reverse" alt="">
+    
+    <div class="container-content" data-aos="fade-up">
+      <div class="opening-text">
+        <p class="arabic-text"><strong>بِسْمِ اللّهِ الرَّحْمَنِ الرَّحِيْ</strong></p>
+        <p class="arabic-text">ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّٰهِ وَبَرَكَاتُهُ</p>
+        <div id="display-ucapan-pembuka">
+          <p>Dengan memohon ridho Allah SWT., kami keluarga besar Pondok Pesantren Al Husna bermaksud untuk menyelenggarakan Haflah At Tasyakur Likhtitam Al Qur'an wal Kutub ke-XII.</p>
+        </div>
+      </div>
+
+      <div class="photo-circle" data-aos="zoom-in">
+        <div class="photo" id="display-foto-sampul"></div>
+      </div>
+
+      <div class="description" data-aos="fade-up" id="display-deskripsi-acara">
+        <p class="arabic-small">لجنة حفله التشكر لاختتام القران والكتب</p>
+        <p>Haflah attasyakur likhtitam AlQur'an wal kutub merupakan kegiatan akhiruddirosah pondok pesantren Al Husna payaman yang dilaksanakan setiap dua tahun sekali...</p>
+      </div>
+    </div>
+
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKR.png" class="ornament bottom-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKN.png" class="ornament bottom-right sway-reverse" alt="">
+  </section>
+
+  <!-- BOX 3: Save The Date -->
+  <section class="box box-3">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKR.png" class="ornament top-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKN.png" class="ornament top-right sway-reverse" alt="">
+
+    <div class="container-content">
+      <h1 class="section-title gold" data-aos="zoom-in-down">Save The Date</h1>
+      
+      <div class="event-card" data-aos="fade-up">
+        <h2 id="display-nama-acara-3">Haflah At Tasyakur Likhtitam Al Qur'an wal Kutub ke-XII</h2>
+        <h3 id="display-tanggal-acara">Senin, 08 Mei 2023</h3>
+        <p id="display-waktu-acara">Pukul 18:00 WIB Sampai Selesai</p>
+        <p id="display-alamat-acara">Halaman Pondok Pesantren Al Husna<br>Pembicara : KH. Thoifur Mawardi</p>
+        <a href="#" id="display-link-maps" class="btn-maps" target="_blank">
+          <i class="fas fa-map-marker-alt"></i> Maps Lokasi Acara
+        </a>
+      </div>
+
+      <!-- Countdown -->
+      <div class="countdown" data-aos="fade-up" id="countdown">
+        <div class="countdown-item"><span id="days">00</span><small>Hari</small></div>
+        <div class="countdown-item"><span id="hours">00</span><small>Jam</small></div>
+        <div class="countdown-item"><span id="minutes">00</span><small>Menit</small></div>
+        <div class="countdown-item"><span id="seconds">00</span><small>Detik</small></div>
+      </div>
+
+      <!-- Google Maps -->
+      <div class="maps-container" data-aos="zoom-in">
+        <iframe id="display-embed-maps" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3956.318819741475!2d110.2257257147759!3d-7.42992749463963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zN8KwMjUnNDcuNyJTIDExMMKwMTMnNDAuNSJF!5e0!3m2!1sid!2sid!4v1680313757205!5m2!1sid!2sid" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+
+      <!-- Susunan Acara -->
+      <div class="timeline" data-aos="fade-up">
+        <h2 class="section-title gold">Susunan Acara</h2>
+        <div class="timeline-content" id="display-susunan-acara">
+          <!-- Diisi dari data -->
+        </div>
+      </div>
+    </div>
+
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKR.png" class="ornament bottom-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKN.png" class="ornament bottom-right sway-reverse" alt="">
+  </section>
+
+  <!-- BOX 4: Gallery -->
+  <section class="box box-4">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKR.png" class="ornament top-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKN.png" class="ornament top-right sway-reverse" alt="">
+
+    <div class="container-content">
+      <h2 class="section-title gold" data-aos="fade-up">Our Gallery</h2>
+      <div class="gallery-grid" id="display-gallery">
+        <!-- Gallery items dari data -->
+      </div>
+    </div>
+
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKR.png" class="ornament bottom-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKN.png" class="ornament bottom-right sway-reverse" alt="">
+  </section>
+
+  <!-- BOX 5: Hadiah & Ucapan -->
+  <section class="box box-5">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKR.png" class="ornament top-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-AKN.png" class="ornament top-right sway-reverse" alt="">
+
+    <div class="container-content">
+      <!-- Hadiah / Amplop Digital -->
+      <div class="gift-section" data-aos="fade-up">
+        <h2 class="section-title gold" id="display-title-hadiah">Titip Hadiah</h2>
+        <div class="bank-card" id="display-rekening">
+          <!-- Diisi dari data -->
+        </div>
+      </div>
+
+      <!-- Form Kehadiran -->
+      <div class="attendance-section" data-aos="fade-up">
+        <h2 class="section-title gold">Kehadiran & Ucapan</h2>
+        <form id="form-ucapan" class="form-ucapan">
+          <div class="form-group">
+            <label>Nama</label>
+            <input type="text" name="nama" id="input-nama" required>
+          </div>
+          <div class="form-group">
+            <label>Ucapan</label>
+            <textarea name="ucapan" id="input-ucapan" rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Kehadiran</label>
+            <select name="kehadiran" id="input-kehadiran">
+              <option value="">-- Pilih --</option>
+              <option value="1">Hadir</option>
+              <option value="0">Tidak Hadir</option>
+            </select>
+          </div>
+          <div class="form-group" id="jumlah-group" style="display:none;">
+            <label>Jumlah Orang</label>
+            <select name="jumlah" id="input-jumlah">
+              <option value="1">1 Orang</option>
+              <option value="2">2 Orang</option>
+              <option value="3">3 Orang</option>
+              <option value="4">4 Orang</option>
+              <option value="5">5 Orang</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-paper-plane"></i> Kirim
+          </button>
+        </form>
+
+        <!-- List Ucapan -->
+        <div class="ucapan-list" id="ucapan-list">
+          <!-- Diisi dari data -->
+        </div>
+      </div>
+    </div>
+
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKR.png" class="ornament bottom-left sway" alt="">
+    <img src="https://indoinvite.com/nikah/template/simple/simple-arabic/SA-BKN.png" class="ornament bottom-right sway-reverse" alt="">
+  </section>
+
+  <!-- BOX 6: Penutup -->
+  <section class="box box-6">
+    <div class="container-content" data-aos="zoom-in-up">
+      <div class="photo-circle">
+        <div class="photo" id="display-foto-penutup"></div>
+      </div>
+      <h2 class="section-title gold" id="display-nama-acara-4">Haflah At Tasyakur Likhtitam Al Qur'an wal Kutub ke-XII</h2>
+      <p class="closing-text" id="display-ucapan-penutup">Merupakan Suatu Kebahagiaan dan Kehormatan bagi Kami, Apabila Bapak/Ibu/Saudara/i, Berkenan Hadir di Acara kami</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 - Undangan Digital</p>
+  </footer>
+</div>
+
+<!-- ============ FLOATING MENU ============ -->
+<div id="floating-menu" class="floating-menu" style="display:none;">
+  <div class="menu-item" onclick="scrollToSection('cover')">
+    <i class="fas fa-home"></i>
+  </div>
+  <div class="menu-item" onclick="scrollToSection('box-2')">
+    <i class="fas fa-users"></i>
+  </div>
+  <div class="menu-item" onclick="scrollToSection('box-4')">
+    <i class="fas fa-images"></i>
+  </div>
+  <div class="menu-item" onclick="scrollToSection('box-5')">
+    <i class="fas fa-map-marker-alt"></i>
+  </div>
+  <div class="menu-item" id="btn-music">
+    <i class="fas fa-music"></i>
+  </div>
+</div>
+
+<!-- Audio -->
+<audio id="bg-music" loop>
+  <source src="https://media.indoinvite.com/2db3bf1e16cd47a08843bb881e39cce7:indoinvite-staging/indoinvite-staging/indoinvite-staging/nikah/theme/music/1662430019.txt" type="audio/mpeg">
+</audio>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
