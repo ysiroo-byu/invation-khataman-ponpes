@@ -1,5 +1,6 @@
 // ========================================
 // UNDANGAN DIGITAL - MAIN JAVASCRIPT
+// Versi Perbaikan - Anti Null Error
 // ========================================
 
 // ===== DATA DEFAULT =====
@@ -48,6 +49,19 @@ const DEFAULT_DATA = {
   ucapan: []
 };
 
+// ===== UTILITY: Safe Element Getter =====
+function safeGet(id) {
+  return document.getElementById(id);
+}
+
+function safeAddListener(element, event, handler) {
+  if (element && typeof element.addEventListener === 'function') {
+    element.addEventListener(event, handler);
+    return true;
+  }
+  return false;
+}
+
 // ===== LOAD DATA =====
 let DATA = {};
 function loadData() {
@@ -57,6 +71,7 @@ function loadData() {
       DATA = JSON.parse(saved);
       DATA = {...DEFAULT_DATA, ...DATA};
     } catch(e) {
+      console.warn('Gagal parse data, menggunakan default');
       DATA = {...DEFAULT_DATA};
     }
   } else {
@@ -66,31 +81,33 @@ function loadData() {
 
 // ===== RENDER DATA KE HALAMAN =====
 function renderData() {
-  // Cover
-  const elNamaAcaraCover = document.getElementById('display-nama-acara-cover');
-  if (elNamaAcaraCover) elNamaAcaraCover.textContent = DATA.nama_acara;
+  // Cover - Nama Acara
+  const elNamaAcaraCover = safeGet('display-nama-acara-cover');
+  if (elNamaAcaraCover) elNamaAcaraCover.textContent = DATA.nama_acara || '';
 
-  const elNamaTamu = document.getElementById('display-nama-tamu');
+  // Cover - Nama Tamu
+  const elNamaTamu = safeGet('display-nama-tamu');
   if (elNamaTamu) {
-    // Cek URL parameter ?kpd=NamaTamu
     const urlParams = new URLSearchParams(window.location.search);
     const kpd = urlParams.get('kpd');
     if (kpd) {
-      elNamaTamu.textContent = decodeURIComponent(kpd);
-      localStorage.setItem('nama_tamu', decodeURIComponent(kpd));
+      const namaDecoded = decodeURIComponent(kpd);
+      elNamaTamu.textContent = namaDecoded;
+      try { localStorage.setItem('nama_tamu', namaDecoded); } catch(e) {}
     } else {
-      const savedNama = localStorage.getItem('nama_tamu');
-      elNamaTamu.textContent = savedNama || DATA.nama_tamu;
+      let savedNama = '';
+      try { savedNama = localStorage.getItem('nama_tamu') || ''; } catch(e) {}
+      elNamaTamu.textContent = savedNama || DATA.nama_tamu || '';
     }
   }
 
-  // Header
-  const elNamaAcaraHeader = document.getElementById('display-nama-acara-header');
-  if (elNamaAcaraHeader) elNamaAcaraHeader.textContent = DATA.nama_acara;
+  // Header - Nama Acara
+  const elNamaAcaraHeader = safeGet('display-nama-acara-header');
+  if (elNamaAcaraHeader) elNamaAcaraHeader.textContent = DATA.nama_acara || '';
 
   // Ucapan Pembuka
-  const elUcapanPembuka = document.getElementById('display-ucapan-pembuka');
-  if (elUcapanPembuka) elUcapanPembuka.innerHTML = DATA.ucapan_pembuka;
+  const elUcapanPembuka = safeGet('display-ucapan-pembuka');
+  if (elUcapanPembuka) elUcapanPembuka.innerHTML = DATA.ucapan_pembuka || '';
 
   // Foto Sampul
   const fotoSampul = document.querySelector('.foto-sampul');
@@ -99,53 +116,55 @@ function renderData() {
   }
 
   // Doa
-  const elDoa = document.getElementById('display-doa');
-  if (elDoa) elDoa.textContent = DATA.doa;
+  const elDoa = safeGet('display-doa');
+  if (elDoa) elDoa.textContent = DATA.doa || '';
 
   // Deskripsi Acara
-  const elDeskripsi = document.getElementById('display-deskripsi-acara');
-  if (elDeskripsi) elDeskripsi.textContent = DATA.deskripsi_acara;
+  const elDeskripsi = safeGet('display-deskripsi-acara');
+  if (elDeskripsi) elDeskripsi.textContent = DATA.deskripsi_acara || '';
 
-  // Acara
-  const elNamaAcaraBadge = document.getElementById('display-nama-acara-badge');
-  if (elNamaAcaraBadge) elNamaAcaraBadge.textContent = DATA.nama_acara;
+  // Acara - Badge
+  const elNamaAcaraBadge = safeGet('display-nama-acara-badge');
+  if (elNamaAcaraBadge) elNamaAcaraBadge.textContent = DATA.nama_acara || '';
 
-  const elHariAcara = document.getElementById('display-tanggal-acara');
-  if (elHariAcara) elHariAcara.textContent = DATA.hari_acara;
+  // Acara - Hari
+  const elHariAcara = safeGet('display-tanggal-acara');
+  if (elHariAcara) elHariAcara.textContent = DATA.hari_acara || '';
 
-  const elWaktuAcara = document.getElementById('display-waktu-acara');
-  if (elWaktuAcara) elWaktuAcara.textContent = DATA.waktu_acara;
+  // Acara - Waktu
+  const elWaktuAcara = safeGet('display-waktu-acara');
+  if (elWaktuAcara) elWaktuAcara.textContent = DATA.waktu_acara || '';
 
-  const elLokasi = document.getElementById('display-lokasi-acara');
+  // Acara - Lokasi
+  const elLokasi = safeGet('display-lokasi-acara');
   if (elLokasi) {
-    elLokasi.innerHTML = `${DATA.lokasi_acara}<br>Pembicara : <span id="display-pembicara">${DATA.pembicara}</span>`;
+    elLokasi.innerHTML = `${DATA.lokasi_acara || ''}<br>Pembicara : <span id="display-pembicara">${DATA.pembicara || ''}</span>`;
   }
 
-  const elPembicara = document.getElementById('display-pembicara');
-  if (elPembicara) elPembicara.textContent = DATA.pembicara;
-
   // Maps
-  const elLinkMaps = document.getElementById('link-maps');
-  if (elLinkMaps) elLinkMaps.href = DATA.link_maps;
+  const elLinkMaps = safeGet('link-maps');
+  if (elLinkMaps) elLinkMaps.href = DATA.link_maps || '#';
 
-  const elEmbedMaps = document.getElementById('embed-maps');
-  if (elEmbedMaps) elEmbedMaps.src = DATA.embed_maps;
+  const elEmbedMaps = safeGet('embed-maps');
+  if (elEmbedMaps && DATA.embed_maps) elEmbedMaps.src = DATA.embed_maps;
 
   // Ucapan Penutup
-  const elUcapanPenutup = document.getElementById('display-ucapan-penutup');
-  if (elUcapanPenutup) elUcapanPenutup.textContent = DATA.ucapan_penutup;
+  const elUcapanPenutup = safeGet('display-ucapan-penutup');
+  if (elUcapanPenutup) elUcapanPenutup.textContent = DATA.ucapan_penutup || '';
 
-  // Thank Section
+  // Thank Section - Foto Akhir
   const fotoAkhir = document.querySelector('.foto-sampul-akhir');
   if (fotoAkhir && DATA.foto_akhir) {
     fotoAkhir.style.backgroundImage = `url('${DATA.foto_akhir}')`;
   }
 
-  const elNamaAcaraAkhir = document.getElementById('display-nama-acara-akhir');
-  if (elNamaAcaraAkhir) elNamaAcaraAkhir.textContent = DATA.nama_acara;
+  // Thank Section - Nama Acara
+  const elNamaAcaraAkhir = safeGet('display-nama-acara-akhir');
+  if (elNamaAcaraAkhir) elNamaAcaraAkhir.textContent = DATA.nama_acara || '';
 
-  const elAkhirKata = document.getElementById('display-akhir-kata');
-  if (elAkhirKata) elAkhirKata.textContent = DATA.akhir_kata;
+  // Thank Section - Akhir Kata
+  const elAkhirKata = safeGet('display-akhir-kata');
+  if (elAkhirKata) elAkhirKata.textContent = DATA.akhir_kata || '';
 
   // Watermark
   const elWatermark = document.querySelector('.watermark');
@@ -155,24 +174,20 @@ function renderData() {
   }
 
   // Musik
-  const audio = document.getElementById('audio-bg');
+  const audio = safeGet('audio-bg');
   if (audio && DATA.musik_url) {
     audio.src = DATA.musik_url;
   }
 
-  // Render Gallery
+  // Render Gallery, Timeline, Ucapan
   renderGallery();
-
-  // Render Timeline
   renderTimeline();
-
-  // Render Ucapan
   renderUcapanList();
 }
 
 // ===== RENDER GALLERY =====
 function renderGallery() {
-  const container = document.getElementById('gallery-container');
+  const container = safeGet('gallery-container');
   if (!container) return;
 
   if (!DATA.gallery || DATA.gallery.length === 0) {
@@ -180,17 +195,20 @@ function renderGallery() {
     return;
   }
 
-  container.innerHTML = DATA.gallery.map((item, i) => `
-    <div class="gallery-item" data-aos="fade-up" data-aos-delay="${i * 100}">
-      <img src="${item.url}" alt="${item.caption || 'Foto'}" loading="lazy" onerror="this.style.display='none'">
-      ${item.caption ? `<div class="caption">${item.caption}</div>` : ''}
-    </div>
-  `).join('');
+  container.innerHTML = DATA.gallery.map((item, i) => {
+    if (!item || !item.url) return '';
+    return `
+      <div class="gallery-item" data-aos="fade-up" data-aos-delay="${i * 100}">
+        <img src="${item.url}" alt="${item.caption || 'Foto'}" loading="lazy" onerror="this.style.display='none'">
+        ${item.caption ? `<div class="caption">${item.caption}</div>` : ''}
+      </div>
+    `;
+  }).join('');
 }
 
 // ===== RENDER TIMELINE =====
 function renderTimeline() {
-  const container = document.getElementById('timeline-container');
+  const container = safeGet('timeline-container');
   if (!container) return;
 
   if (!DATA.timeline || DATA.timeline.length === 0) {
@@ -198,19 +216,22 @@ function renderTimeline() {
     return;
   }
 
-  container.innerHTML = DATA.timeline.map((item, i) => `
-    <div class="timeline-item" data-aos="fade-up" data-aos-delay="${i * 100}">
-      <div class="timeline-content">
-        <div class="timeline-waktu">${item.waktu}</div>
-        <div class="timeline-acara">${item.acara}</div>
+  container.innerHTML = DATA.timeline.map((item, i) => {
+    if (!item) return '';
+    return `
+      <div class="timeline-item" data-aos="fade-up" data-aos-delay="${i * 100}">
+        <div class="timeline-content">
+          <div class="timeline-waktu">${item.waktu || ''}</div>
+          <div class="timeline-acara">${item.acara || ''}</div>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // ===== RENDER UCAPAN LIST =====
 function renderUcapanList() {
-  const container = document.getElementById('box-ucapan');
+  const container = safeGet('box-ucapan');
   if (!container) return;
 
   const ucapanList = DATA.ucapan || [];
@@ -219,35 +240,36 @@ function renderUcapanList() {
     return;
   }
 
-  container.innerHTML = ucapanList.map((u, i) => `
-    <div class="ucapan-item" data-aos="fade-up" data-aos-delay="${i * 50}">
-      <div class="nama">
-        ${u.nama}
-        <span class="badge-hadir ${u.ket_hadir == '1' ? 'hadir' : 'tidak-hadir'}">
-          ${u.ket_hadir == '1' ? '✓ Hadir' : '✗ Tidak Hadir'}
-        </span>
-        ${u.jumlah ? `<small style="color:#999; margin-left:5px;">(${u.jumlah} orang)</small>` : ''}
+  container.innerHTML = ucapanList.map((u, i) => {
+    if (!u) return '';
+    return `
+      <div class="ucapan-item" data-aos="fade-up" data-aos-delay="${i * 50}">
+        <div class="nama">
+          ${u.nama || 'Anonim'}
+          <span class="badge-hadir ${u.ket_hadir == '1' ? 'hadir' : 'tidak-hadir'}">
+            ${u.ket_hadir == '1' ? '✓ Hadir' : '✗ Tidak Hadir'}
+          </span>
+          ${u.jumlah ? `<small style="color:#999; margin-left:5px;">(${u.jumlah} orang)</small>` : ''}
+        </div>
+        <div class="tanggal">${u.tanggal || ''}</div>
+        <div class="isi">${u.ucapan || ''}</div>
       </div>
-      <div class="tanggal">${u.tanggal || ''}</div>
-      <div class="isi">${u.ucapan}</div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // ===== COUNTDOWN =====
 function startCountdown() {
   if (DATA.countdown === false) {
-    const countdownEl = document.getElementById('countdown');
+    const countdownEl = safeGet('countdown');
     if (countdownEl) countdownEl.style.display = 'none';
     return;
   }
 
-  // Parse tanggal acara
   let targetDate;
   if (DATA.tanggal_acara) {
     const parts = DATA.tanggal_acara.split('-');
     if (parts.length === 3) {
-      // Format waktu dari waktu_acara (contoh: "Pukul 18:00 WIB")
       let hours = 18, minutes = 0;
       if (DATA.waktu_acara) {
         const timeMatch = DATA.waktu_acara.match(/(\d{1,2}):(\d{2})/);
@@ -256,37 +278,37 @@ function startCountdown() {
           minutes = parseInt(timeMatch[2]);
         }
       }
-      targetDate = new Date(parts[0], parts[1] - 1, parts[2], hours, minutes, 0);
+      targetDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), hours, minutes, 0);
     }
   }
 
   if (!targetDate || isNaN(targetDate.getTime())) {
-    // Default: 30 hari dari sekarang
     targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + 30);
   }
 
   function updateCountdown() {
+    const daysEl = safeGet('days');
+    const hoursEl = safeGet('hours');
+    const minutesEl = safeGet('minutes');
+    const secondsEl = safeGet('seconds');
+    if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
     const now = new Date().getTime();
     const distance = targetDate.getTime() - now;
 
     if (distance < 0) {
-      document.getElementById('days').textContent = '0';
-      document.getElementById('hours').textContent = '0';
-      document.getElementById('minutes').textContent = '0';
-      document.getElementById('seconds').textContent = '0';
+      daysEl.textContent = '0';
+      hoursEl.textContent = '0';
+      minutesEl.textContent = '0';
+      secondsEl.textContent = '0';
       return;
     }
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById('days').textContent = days;
-    document.getElementById('hours').textContent = hours;
-    document.getElementById('minutes').textContent = minutes;
-    document.getElementById('seconds').textContent = seconds;
+    daysEl.textContent = Math.floor(distance / (1000 * 60 * 60 * 24));
+    hoursEl.textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    minutesEl.textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    secondsEl.textContent = Math.floor((distance % (1000 * 60)) / 1000);
   }
 
   updateCountdown();
@@ -295,27 +317,41 @@ function startCountdown() {
 
 // ===== FORM UCAPAN =====
 function initFormUcapan() {
-  const form = document.getElementById('form-ucapan');
-  if (!form) return;
+  const form = safeGet('form-ucapan');
+  if (!form) {
+    console.log('Form ucapan tidak ditemukan, skip init');
+    return;
+  }
 
-  const kehadiranSelect = document.getElementById('input-kehadiran');
-  const jumlahGroup = document.getElementById('jumlah-group');
+  const kehadiranSelect = safeGet('input-kehadiran');
+  const jumlahGroup = safeGet('jumlah-group');
 
-  kehadiranSelect.addEventListener('change', function() {
-    if (this.value === '1') {
-      jumlahGroup.style.display = 'block';
-    } else {
-      jumlahGroup.style.display = 'none';
-    }
-  });
+  // ✅ FIX: Tambahkan null check
+  if (kehadiranSelect) {
+    kehadiranSelect.addEventListener('change', function() {
+      if (jumlahGroup) {
+        jumlahGroup.style.display = (this.value === '1') ? 'block' : 'none';
+      }
+    });
+  }
 
   form.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const nama = document.getElementById('input-nama').value.trim();
-    const ucapan = document.getElementById('input-ucapan').value.trim();
-    const ket_hadir = document.getElementById('input-kehadiran').value;
-    const jumlah = document.getElementById('input-jumlah').value;
+    const inputNama = safeGet('input-nama');
+    const inputUcapan = safeGet('input-ucapan');
+    const inputKehadiran = safeGet('input-kehadiran');
+    const inputJumlah = safeGet('input-jumlah');
+
+    if (!inputNama || !inputUcapan || !inputKehadiran) {
+      alert('Form tidak lengkap!');
+      return;
+    }
+
+    const nama = inputNama.value.trim();
+    const ucapan = inputUcapan.value.trim();
+    const ket_hadir = inputKehadiran.value;
+    const jumlah = inputJumlah ? inputJumlah.value : '1';
 
     if (!nama || !ucapan || !ket_hadir) {
       alert('Mohon lengkapi semua field!');
@@ -336,41 +372,45 @@ function initFormUcapan() {
 
     if (!DATA.ucapan) DATA.ucapan = [];
     DATA.ucapan.unshift(newUcapan);
-    localStorage.setItem('undangan_data', JSON.stringify(DATA));
+    try {
+      localStorage.setItem('undangan_data', JSON.stringify(DATA));
+    } catch(e) {
+      console.warn('Gagal simpan ke localStorage:', e);
+    }
 
     renderUcapanList();
-    AOS.refresh();
+    if (typeof AOS !== 'undefined' && AOS.refresh) AOS.refresh();
 
     form.reset();
-    jumlahGroup.style.display = 'none';
+    if (jumlahGroup) jumlahGroup.style.display = 'none';
 
-    // Tampilkan animasi ucapan
     showAnimasiUcapan(newUcapan);
 
-    // Notifikasi sukses
     const btn = form.querySelector('.btn-kirim');
-    const originalText = btn.textContent;
-    btn.textContent = '✓ Terkirim!';
-    btn.style.background = '#27ae60';
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.style.background = '';
-    }, 2000);
+    if (btn) {
+      const originalText = btn.textContent;
+      btn.textContent = '✓ Terkirim!';
+      btn.style.background = '#27ae60';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+      }, 2000);
+    }
   });
 }
 
 // ===== ANIMASI UCAPAN FLOATING =====
 function showAnimasiUcapan(ucapanData) {
-  if (DATA.animasi_ucapan === false) return;
+  if (!ucapanData || DATA.animasi_ucapan === false) return;
 
-  const animasi = document.getElementById('animasi-ucapan');
-  const animNama = document.getElementById('anim-nama');
-  const animUcapan = document.getElementById('anim-ucapan');
+  const animasi = safeGet('animasi-ucapan');
+  const animNama = safeGet('anim-nama');
+  const animUcapan = safeGet('anim-ucapan');
 
-  if (!animasi) return;
+  if (!animasi || !animNama || !animUcapan) return;
 
-  animNama.textContent = ucapanData.nama;
-  animUcapan.textContent = ucapanData.ucapan;
+  animNama.textContent = ucapanData.nama || '';
+  animUcapan.textContent = ucapanData.ucapan || '';
 
   animasi.classList.add('show');
 
@@ -379,88 +419,97 @@ function showAnimasiUcapan(ucapanData) {
   }, 5000);
 }
 
-// Auto animasi ucapan random
 function startAutoAnimasiUcapan() {
   if (DATA.animasi_ucapan === false) return;
   if (!DATA.ucapan || DATA.ucapan.length === 0) return;
 
   setInterval(() => {
-    const randomIndex = Math.floor(Math.random() * DATA.ucapan.length);
-    showAnimasiUcapan(DATA.ucapan[randomIndex]);
+    if (DATA.ucapan && DATA.ucapan.length > 0) {
+      const randomIndex = Math.floor(Math.random() * DATA.ucapan.length);
+      showAnimasiUcapan(DATA.ucapan[randomIndex]);
+    }
   }, 8000);
 }
 
 // ===== AUDIO CONTROL =====
 let isMusicPlaying = false;
 function toggleMusic() {
-  const audio = document.getElementById('audio-bg');
-  const btn = document.getElementById('btn-music');
+  const audio = safeGet('audio-bg');
+  const btn = safeGet('btn-music');
   if (!audio) return;
 
   if (audio.paused) {
     audio.play().then(() => {
       isMusicPlaying = true;
-      btn.innerHTML = '<i class="fa fa-pause"></i>';
-      btn.classList.add('active');
+      if (btn) {
+        btn.innerHTML = '<i class="fa fa-pause"></i>';
+        btn.classList.add('active');
+      }
     }).catch(err => {
       console.log('Audio play error:', err);
     });
   } else {
     audio.pause();
     isMusicPlaying = false;
-    btn.innerHTML = '<i class="fa fa-music"></i>';
-    btn.classList.remove('active');
+    if (btn) {
+      btn.innerHTML = '<i class="fa fa-music"></i>';
+      btn.classList.remove('active');
+    }
   }
 }
 
 function initAudio() {
-  const audio = document.getElementById('audio-bg');
+  const audio = safeGet('audio-bg');
   if (!audio) return;
 
-  // Set volume
   audio.volume = 0.5;
 
-  // Autoplay saat buka undangan
   if (DATA.autoplay !== false) {
-    document.getElementById('btn-buka-undangan').addEventListener('click', function() {
-      setTimeout(() => {
-        audio.play().then(() => {
-          isMusicPlaying = true;
-          const btn = document.getElementById('btn-music');
-          if (btn) {
-            btn.innerHTML = '<i class="fa fa-pause"></i>';
-            btn.classList.add('active');
-          }
-        }).catch(err => {
-          console.log('Autoplay blocked:', err);
-        });
-      }, 500);
-    });
+    const btnBuka = safeGet('btn-buka-undangan');
+    if (btnBuka) {
+      btnBuka.addEventListener('click', function() {
+        setTimeout(() => {
+          audio.play().then(() => {
+            isMusicPlaying = true;
+            const btn = safeGet('btn-music');
+            if (btn) {
+              btn.innerHTML = '<i class="fa fa-pause"></i>';
+              btn.classList.add('active');
+            }
+          }).catch(err => {
+            console.log('Autoplay blocked:', err);
+          });
+        }, 500);
+      });
+    }
   }
 }
 
 // ===== COVER / BUKA UNDANGAN =====
 function initCover() {
-  const btnBuka = document.getElementById('btn-buka-undangan');
-  const cover = document.getElementById('cover');
-  const fixMenu = document.getElementById('fix-menu');
+  const btnBuka = safeGet('btn-buka-undangan');
+  const cover = safeGet('cover');
+  const fixMenu = safeGet('fix-menu');
 
-  if (!btnBuka || !cover) return;
+  if (!btnBuka || !cover) {
+    console.log('Cover atau tombol buka tidak ditemukan');
+    return;
+  }
 
   btnBuka.addEventListener('click', function() {
     cover.classList.add('cover-opened');
     if (fixMenu) fixMenu.style.display = 'flex';
 
-    // Hide loading screen
-    const loading = document.getElementById('loading-screen');
+    const loading = safeGet('loading-screen');
     if (loading) {
       loading.classList.add('hidden');
-      setTimeout(() => loading.remove(), 1000);
+      setTimeout(() => {
+        if (loading.parentNode) loading.remove();
+      }, 1000);
     }
 
-    // Init AOS after cover opened
     setTimeout(() => {
-      if (typeof AOS !== 'undefined') {
+      if (typeof AOS !== 'undefined' && AOS.init) {
         AOS.init({
           duration: 1000,
           once: true,
@@ -469,7 +518,6 @@ function initCover() {
       }
     }, 1000);
 
-    // Start auto animasi ucapan
     setTimeout(startAutoAnimasiUcapan, 3000);
   });
 }
@@ -477,7 +525,7 @@ function initCover() {
 // ===== LOADING SCREEN =====
 function initLoadingScreen() {
   setTimeout(() => {
-    const loading = document.getElementById('loading-screen');
+    const loading = safeGet('loading-screen');
     if (loading) {
       loading.classList.add('hidden');
       setTimeout(() => {
@@ -489,19 +537,24 @@ function initLoadingScreen() {
 
 // ===== SCROLL FUNCTIONS =====
 function scrollToHome() {
-  document.querySelector('.header-section').scrollIntoView({behavior: 'smooth'});
+  const el = document.querySelector('.header-section');
+  if (el) el.scrollIntoView({behavior: 'smooth'});
 }
 function scrollToUcapan() {
-  document.querySelector('.rsvp-section').scrollIntoView({behavior: 'smooth'});
+  const el = document.querySelector('.rsvp-section');
+  if (el) el.scrollIntoView({behavior: 'smooth'});
 }
 function scrollToGallery() {
-  document.querySelector('.story-section').scrollIntoView({behavior: 'smooth'});
+  const el = document.querySelector('.story-section');
+  if (el) el.scrollIntoView({behavior: 'smooth'});
 }
 function scrollToMap() {
-  document.querySelector('.acara-section').scrollIntoView({behavior: 'smooth'});
+  const el = document.querySelector('.acara-section');
+  if (el) el.scrollIntoView({behavior: 'smooth'});
 }
 function scrollToBox2() {
-  document.querySelector('.couple-section').scrollIntoView({behavior: 'smooth'});
+  const el = document.querySelector('.couple-section');
+  if (el) el.scrollIntoView({behavior: 'smooth'});
 }
 
 // ===== ICON @ 5X KLIK =====
@@ -509,7 +562,7 @@ let clickCount = 0;
 let clickTimer = null;
 
 function attachIconAtListener() {
-  const iconAt = document.getElementById('icon-at');
+  const iconAt = safeGet('icon-at');
   if (!iconAt) return;
 
   iconAt.addEventListener('click', function() {
@@ -533,62 +586,55 @@ function attachIconAtListener() {
 
 // ===== MODAL LOGIN ADMIN =====
 function openModalLogin() {
-  const modal = document.getElementById('modal-login');
+  const modal = safeGet('modal-login');
   if (modal) {
     modal.classList.add('active');
-    document.getElementById('input-password').focus();
+    const input = safeGet('input-password');
+    if (input) input.focus();
   }
 }
 
 function closeModalLogin() {
-  const modal = document.getElementById('modal-login');
+  const modal = safeGet('modal-login');
   if (modal) {
     modal.classList.remove('active');
-    document.getElementById('input-password').value = '';
-    document.getElementById('login-error').textContent = '';
+    const input = safeGet('input-password');
+    if (input) input.value = '';
+    const error = safeGet('login-error');
+    if (error) error.textContent = '';
   }
 }
 
 function submitLogin() {
-  const input = document.getElementById('input-password');
-  const error = document.getElementById('login-error');
+  const input = safeGet('input-password');
+  const error = safeGet('login-error');
+  if (!input) return;
+
   const password = input.value;
 
   if (!password) {
-    error.textContent = 'Masukkan password!';
+    if (error) error.textContent = 'Masukkan password!';
     return;
   }
 
   const correctPassword = DATA.password_admin || 'y2103';
 
   if (password === correctPassword) {
-    error.textContent = '';
+    if (error) error.textContent = '';
     closeModalLogin();
-    // Redirect ke admin.html
     window.location.href = 'admin.html';
   } else {
-    error.textContent = 'Password salah!';
+    if (error) error.textContent = 'Password salah!';
     input.value = '';
     input.focus();
   }
 }
 
-// Enter key untuk submit login
-document.addEventListener('DOMContentLoaded', function() {
-  const inputPassword = document.getElementById('input-password');
-  if (inputPassword) {
-    inputPassword.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        submitLogin();
-      }
-    });
-  }
-});
-
 // ===== ACTIVE MENU ON SCROLL =====
 function initScrollSpy() {
   const sections = document.querySelectorAll('section[id]');
   const menuItems = document.querySelectorAll('.menu-item');
+  if (sections.length === 0 || menuItems.length === 0) return;
 
   window.addEventListener('scroll', () => {
     let current = '';
@@ -599,64 +645,21 @@ function initScrollSpy() {
       }
     });
 
-    menuItems.forEach(item => {
-      item.classList.remove('active');
-    });
+    menuItems.forEach(item => item.classList.remove('active'));
 
-    // Simple mapping
     if (current === 'cover' || current === 'header') {
-      menuItems[0]?.classList.add('active');
+      if (menuItems[0]) menuItems[0].classList.add('active');
     } else if (current === 'rsvp') {
-      menuItems[1]?.classList.add('active');
+      if (menuItems[1]) menuItems[1].classList.add('active');
     } else if (current === 'story') {
-      menuItems[2]?.classList.add('active');
+      if (menuItems[2]) menuItems[2].classList.add('active');
     } else if (current === 'acara') {
-      menuItems[3]?.classList.add('active');
+      if (menuItems[3]) menuItems[3].classList.add('active');
     }
   });
 }
 
-// ===== INIT ALL =====
-document.addEventListener('DOMContentLoaded', function() {
-  // Load data
-  loadData();
-
-  // Render data ke halaman
-  renderData();
-
-  // Init countdown
-  startCountdown();
-
-  // Init form ucapan
-  initFormUcapan();
-
-  // Init audio
-  initAudio();
-
-  // Init cover
-  initCover();
-
-  // Init loading screen
-  initLoadingScreen();
-
-  // Init scroll spy
-  initScrollSpy();
-
-  // Init AOS
-  if (typeof AOS !== 'undefined') {
-    AOS.init({
-      duration: 1000,
-      once: true,
-      offset: 50
-    });
-  }
-
-  console.log('%c🎉 Undangan Digital Loaded Successfully!', 'color: #0A878E; font-size: 16px; font-weight: bold;');
-  console.log('%c💡 Klik icon @ 5x di footer untuk akses admin', 'color: #666; font-size: 12px;');
-});
-
-// ===== UTILITY FUNCTIONS =====
-// Expose functions to global scope for onclick handlers
+// ===== EXPOSE FUNCTIONS TO GLOBAL =====
 window.scrollToHome = scrollToHome;
 window.scrollToUcapan = scrollToUcapan;
 window.scrollToGallery = scrollToGallery;
@@ -665,3 +668,56 @@ window.scrollToBox2 = scrollToBox2;
 window.toggleMusic = toggleMusic;
 window.closeModalLogin = closeModalLogin;
 window.submitLogin = submitLogin;
+
+// ===== INIT ALL =====
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    // Load data
+    loadData();
+
+    // Render data ke halaman
+    renderData();
+
+    // Init countdown
+    startCountdown();
+
+    // Init form ucapan
+    initFormUcapan();
+
+    // Init audio
+    initAudio();
+
+    // Init cover
+    initCover();
+
+    // Init loading screen
+    initLoadingScreen();
+
+    // Init scroll spy
+    initScrollSpy();
+
+    // Init AOS
+    if (typeof AOS !== 'undefined' && AOS.init) {
+      AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 50
+      });
+    }
+
+    // ✅ FIX: Enter key untuk submit login (dengan null check)
+    const inputPassword = safeGet('input-password');
+    if (inputPassword) {
+      inputPassword.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          submitLogin();
+        }
+      });
+    }
+
+    console.log('%c🎉 Undangan Digital Loaded Successfully!', 'color: #0A878E; font-size: 16px; font-weight: bold;');
+    console.log('%c💡 Klik icon @ 5x di footer untuk akses admin', 'color: #666; font-size: 12px;');
+  } catch(err) {
+    console.error('Error saat init:', err);
+  }
+});
