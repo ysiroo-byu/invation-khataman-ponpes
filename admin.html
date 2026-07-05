@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel - Edit Undangan</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f5f5;
+    color: #333;
+  }
+  
+  .admin-header {
+    background: linear-gradient(135deg, #ac373c, #ffa803);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .admin-header h1 { font-size: 20px; margin-bottom: 5px; }
+  .admin-header p { font-size: 12px; opacity: 0.9; }
+  
+  .admin-container {
+    display: flex;
+    min-height: calc(100vh - 80px);
+  }
+  
+  .sidebar {
+    width: 250px;
+    background: white;
+    padding: 20px 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+  
+  .sidebar-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .sidebar-item:hover {
+    background: #f8f8f8;
+    border-left-color: #ffa803;
+  }
+  
+  .sidebar-item.active {
+    background: #fff5e6;
+    border-left-color: #ac373c;
+    color: #ac373c;
+    font-weight: 600;
+  }
+  
+  .main-panel {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+  }
+  
+  .panel-section {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    display: none;
+  }
+  
+  .panel-section.active { display: block; }
+  
+  .panel-section h2 {
+    color: #ac373c;
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ffa803;
+  }
+  
+  .form-group {
+    margin-bottom: 18px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border 0.3s;
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #ac373c;
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn-primary {
+    background: #ac373c;
+    color: white;
+  }
+  
+  .btn-primary:hover { background: #8a2c30; }
+  
+  .btn-secondary {
+    background: #ffa803;
+    color: #333;
+  }
+  
+  .btn-secondary:hover { background: #e69500; }
+  
+  .btn-danger {
+    background: #dc3545;
+    color: white;
+  }
+  
+  .btn-success {
+    background: #28a745;
+    color: white;
+  }
+  
+  .btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .list-item {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ffa803;
+    position: relative;
+  }
+  
+  .list-item-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+  }
+  
+  .list-item-actions button {
+    width: 30px; height: 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .btn-edit { background: #17a2b8; color: white; }
+  .btn-delete { background: #dc3545; color: white; }
+  
+  .preview-box {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px dashed #ccc;
+    text-align: center;
+  }
+  
+  .preview-box img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+  }
+  
+  .alert {
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    display: none;
+  }
+  
+  .alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  
+  .tab.active {
+    border-bottom-color: #ac373c;
+    color: #ac373c;
+    font-weight: 600;
+  }
+  
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  
+  @media (max-width: 768px) {
+    .admin-container { flex-direction: column; }
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: static;
+      display: flex;
+      overflow-x: auto;
+      padding: 10px;
+    }
+    .sidebar-item {
+      white-space: nowrap;
+      border-left: none;
+      border-bottom: 3px solid transparent;
+    }
+    .sidebar-item.active {
+      border-left: none;
+      border-bottom-color: #ac373c;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="admin-header">
+  <h1><i class="fas fa-cog"></i> Admin Panel - Edit Undangan</h1>
+  <p>Kelola semua konten undangan digital Anda</p>
+</div>
+
+<div class="admin-container">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-item active" onclick="showSection('info-umum')">
+      <i class="fas fa-info-circle"></i> Info Umum
+    </div>
+    <div class="sidebar-item" onclick="showSection('cover')">
+      <i class="fas fa-envelope"></i> Cover Undangan
+    </div>
+    <div class="sidebar-item" onclick="showSection('hero')">
+      <i class="fas fa-image"></i> Hero Slider
+    </div>
+    <div class="sidebar-item" onclick="showSection('pembuka')">
+      <i class="fas fa-quote-left"></i> Ucapan Pembuka
+    </div>
+    <div class="sidebar-item" onclick="showSection('acara')">
+      <i class="fas fa-calendar-alt"></i> Detail Acara
+    </div>
+    <div class="sidebar-item" onclick="showSection('susunan')">
+      <i class="fas fa-list-ol"></i> Susunan Acara
+    </div>
+    <div class="sidebar-item" onclick="showSection('gallery')">
+      <i class="fas fa-images"></i> Gallery Foto
+    </div>
+    <div class="sidebar-item" onclick="showSection('hadiah')">
+      <i class="fas fa-gift"></i> Hadiah / Rekening
+    </div>
+    <div class="sidebar-item" onclick="showSection('ucapan')">
+      <i class="fas fa-comments"></i> Daftar Ucapan
+    </div>
+    <div class="sidebar-item" onclick="showSection('penutup')">
+      <i class="fas fa-flag-checkered"></i> Penutup
+    </div>
+    <div class="sidebar-item" onclick="showSection('export')">
+      <i class="fas fa-download"></i> Export / Import
+    </div>
+  </div>
+
+  <!-- MAIN PANEL -->
+  <div class="main-panel">
+    <div id="alert-success" class="alert alert-success">
+      <i class="fas fa-check-circle"></i> Data berhasil disimpan!
+    </div>
+
+    <!-- INFO UMUM -->
+    <div class="panel-section active" id="section-info-umum">
+      <h2><i class="fas fa-info-circle"></i> Info Umum Acara</h2>
+      <div class="form-group">
+        <label>Nama Acara</label>
+        <input type="text" id="field-nama-acara" placeholder="Contoh: Haflah At Tasyakur...">
+      </div>
+      <div class="form-group">
+        <label>Nama Tamu Default</label>
+        <input type="text" id="field-nama-tamu" placeholder="Bapak/Ibu/Saudara/i">
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="saveInfoUmum()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- COVER -->
+    <div class="panel-section" id="section-cover">
+      <h2><i class="fas fa-envelope"></i> Cover Undangan</h2>
+      <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+        Cover adalah halaman pertama yang dilihat tamu. Ornamen dan background menggunakan template default.
+      </p>
+      <div class="form-group">
+        <label>Teks Pembuka</label>
+        <input type="text" id="field-cover-subtitle" value="We Invite You To">
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="saveCover()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- HERO SLIDER -->
+    <div class="panel-section" id="section-hero">
+      <h2><i class="fas fa-image"></i> Hero Slider</h2>
+      <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+        Gambar-gambar yang tampil di halaman hero (slider otomatis).
+      </p>
+      <div id="hero-list"></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="addHeroSlide()">
+          <i class="fas fa-plus"></i> Tambah Slide
+        </button>
+        <button class="btn btn-primary" onclick="saveHero()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- UCAPAN PEMBUKA -->
+    <div class="panel-section" id="section-pembuka">
+      <h2><i class="fas fa-quote-left"></i> Ucapan Pembuka</h2>
+      <div class="form-group">
+        <label>Teks Pembuka (HTML diperbolehkan)</label>
+        <textarea id="field-ucapan-pembuka" rows="6"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Deskripsi Acara (HTML diperbolehkan)</label>
+        <textarea id="field-deskripsi-acara" rows="8"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Foto Sampul (URL)</label>
+        <input type="text" id="field-foto-sampul" placeholder="https://...">
+        <div class="preview-box" id="preview-foto-sampul"></div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="savePembuka()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- DETAIL ACARA -->
+    <div class="panel-section" id="section-acara">
+      <h2><i class="fas fa-calendar-alt"></i> Detail Acara</h2>
+      <div class="form-group">
+        <label>Tanggal & Waktu Acara</label>
+        <input type="datetime-local" id="field-tanggal-acara">
+      </div>
+      <div class="form-group">
+        <label>Tampilan Tanggal (teks)</label>
+        <input type="text" id="field-tanggal-display" placeholder="Senin, 08 Mei 2023">
+      </div>
+      <div class="form-group">
+        <label>Waktu Acara (teks)</label>
+        <input type="text" id="field-waktu-acara" placeholder="Pukul 18:00 WIB Sampai Selesai">
+      </div>
+      <div class="form-group">
+        <label>Alamat Acara (HTML diperbolehkan)</label>
+        <textarea id="field-alamat-acara" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Link Google Maps</label>
+        <input type="text" id="field-link-maps" placeholder="https://goo.gl/maps/...">
+      </div>
+      <div class="form-group">
+        <label>Embed Google Maps (iframe src)</label>
+        <textarea id="field-embed-maps" rows="2"></textarea>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="saveAcara()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- SUSUNAN ACARA -->
+    <div class="panel-section" id="section-susunan">
+      <h2><i class="fas fa-list-ol"></i> Susunan Acara</h2>
+      <div id="susunan-list"></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="addSusunan()">
+          <i class="fas fa-plus"></i> Tambah Item
+        </button>
+        <button class="btn btn-primary" onclick="saveSusunan()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="panel-section" id="section-gallery">
+      <h2><i class="fas fa-images"></i> Gallery Foto</h2>
+      <div id="gallery-list"></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="addGallery()">
+          <i class="fas fa-plus"></i> Tambah Foto
+        </button>
+        <button class="btn btn-primary" onclick="saveGallery()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- HADIAH / REKENING -->
+    <div class="panel-section" id="section-hadiah">
+      <h2><i class="fas fa-gift"></i> Hadiah / Amplop Digital</h2>
+      <div id="rekening-list"></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="addRekening()">
+          <i class="fas fa-plus"></i> Tambah Rekening
+        </button>
+        <button class="btn btn-primary" onclick="saveHadiah()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- UCAPAN LIST -->
+    <div class="panel-section" id="section-ucapan">
+      <h2><i class="fas fa-comments"></i> Daftar Ucapan</h2>
+      <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+        Kelola ucapan tamu yang sudah masuk.
+      </p>
+      <div id="ucapan-list-admin"></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="addUcapan()">
+          <i class="fas fa-plus"></i> Tambah Ucapan Manual
+        </button>
+        <button class="btn btn-primary" onclick="saveUcapanList()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- PENUTUP -->
+    <div class="panel-section" id="section-penutup">
+      <h2><i class="fas fa-flag-checkered"></i> Penutup</h2>
+      <div class="form-group">
+        <label>Teks Penutup</label>
+        <textarea id="field-ucapan-penutup" rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Foto Penutup (URL)</label>
+        <input type="text" id="field-foto-penutup" placeholder="https://...">
+        <div class="preview-box" id="preview-foto-penutup"></div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="savePenutup()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+
+    <!-- EXPORT / IMPORT -->
+    <div class="panel-section" id="section-export">
+      <h2><i class="fas fa-download"></i> Export / Import Data</h2>
+      <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+        Backup atau restore data undangan Anda.
+      </p>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="exportData()">
+          <i class="fas fa-download"></i> Export JSON
+        </button>
+        <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">
+          <i class="fas fa-upload"></i> Import JSON
+        </button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+        <button class="btn btn-danger" onclick="resetData()">
+          <i class="fas fa-trash"></i> Reset ke Default
+        </button>
+      </div>
+      <div class="btn-group" style="margin-top: 30px;">
+        <a href="index.html" target="_blank" class="btn btn-success">
+          <i class="fas fa-external-link-alt"></i> Preview Undangan
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
